@@ -55,9 +55,9 @@ class DoctrineBuilder implements QueryInterface
     protected $search = FALSE;
 
     /**
-     * class constructor 
-     * 
-     * @param ContainerInterface $container 
+     * class constructor
+     *
+     * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
@@ -69,7 +69,6 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * get the search dql
-     * 
      * @return string
      */
     protected function _addSearch(\Doctrine\ORM\QueryBuilder $queryBuilder)
@@ -83,6 +82,7 @@ class DoctrineBuilder implements QueryInterface
                 $search_param = $request->get("sSearch_{$i}");
                 if ($request->get("sSearch_{$i}") !== false && !empty($search_param))
                 {
+                    $search_field = current(explode(' as ', $search_field));
                     $queryBuilder->andWhere(" $search_field like '%{$request->get("sSearch_{$i}")}%' ");
                 }
             }
@@ -91,20 +91,20 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * add join
-     * 
+     *
      * @example:
-     *      ->setJoin( 
-     *              'r.event', 
-     *              'e', 
-     *              \Doctrine\ORM\Query\Expr\Join::INNER_JOIN, 
-     *              'e.name like %test%') 
-     * 
+     *      ->setJoin(
+     *              'r.event',
+     *              'e',
+     *              \Doctrine\ORM\Query\Expr\Join::INNER_JOIN,
+     *              'e.name like %test%')
+     *
      * @param string $join_field
      * @param string $alias
      * @param string $type
      * @param string $cond
-     * 
-     * @return Datatable 
+     *
+     * @return Datatable
      */
     public function addJoin($join_field, $alias, $type = Join::INNER_JOIN, $cond = '')
     {
@@ -119,8 +119,8 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * get total records
-     * 
-     * @return integer 
+     *
+     * @return integer
      */
     public function getTotalRecords()
     {
@@ -144,10 +144,10 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * get data
-     * 
+     *
      * @param int $hydration_mode
-     * 
-     * @return array 
+     *
+     * @return array
      */
     public function getData($hydration_mode)
     {
@@ -155,7 +155,9 @@ class DoctrineBuilder implements QueryInterface
         $dql_fields = array_values($this->fields);
         if ($request->get('iSortCol_0') != null)
         {
-            $order_field = current(explode(' as ', $dql_fields[$request->get('iSortCol_0')]));
+            $orderField = explode(' as ', $dql_fields[$request->get('iSortCol_0')]);
+            $order_field = $orderField[count($orderField)-1];
+            //$order_field = current(explode(' as ', $dql_fields[$request->get('iSortCol_0')]));
         }
         else
         {
@@ -221,7 +223,7 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * get entity name
-     * 
+     *
      * @return string
      */
     public function getEntityName()
@@ -231,7 +233,7 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * get entity alias
-     * 
+     *
      * @return string
      */
     public function getEntityAlias()
@@ -241,7 +243,7 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * get fields
-     * 
+     *
      * @return array
      */
     public function getFields()
@@ -261,7 +263,7 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * get order type
-     * 
+     *
      * @return string
      */
     public function getOrderType()
@@ -271,7 +273,7 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * get doctrine query builder
-     * 
+     *
      * @return \Doctrine\ORM\QueryBuilder
      */
     public function getDoctrineQueryBuilder()
@@ -281,11 +283,11 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * set entity
-     * 
+     *
      * @param type $entity_name
      * @param type $entity_alias
-     * 
-     * @return Datatable 
+     *
+     * @return Datatable
      */
     public function setEntity($entity_name, $entity_alias)
     {
@@ -297,10 +299,10 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * set fields
-     * 
+     *
      * @param array $fields
-     * 
-     * @return Datatable 
+     *
+     * @return Datatable
      */
     public function setFields(array $fields)
     {
@@ -311,11 +313,11 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * set order
-     * 
+     *
      * @param type $order_field
      * @param type $order_type
-     * 
-     * @return Datatable 
+     *
+     * @return Datatable
      */
     public function setOrder($order_field, $order_type)
     {
@@ -327,10 +329,10 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * set fixed data
-     * 
+     *
      * @param type $data
-     * 
-     * @return Datatable 
+     *
+     * @return Datatable
      */
     public function setFixedData($data)
     {
@@ -340,11 +342,11 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * set query where
-     * 
+     *
      * @param string $where
      * @param array  $params
-     * 
-     * @return Datatable 
+     *
+     * @return Datatable
      */
     public function setWhere($where, array $params = array())
     {
@@ -355,10 +357,10 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * set query group
-     * 
+     *
      * @param string $group
-     * 
-     * @return Datatable 
+     *
+     * @return Datatable
      */
     public function setGroupBy($group)
     {
@@ -368,9 +370,9 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * set search
-     * 
+     *
      * @param bool $search
-     * 
+     *
      * @return Datatable
      */
     public function setSearch($search)
@@ -381,10 +383,10 @@ class DoctrineBuilder implements QueryInterface
 
     /**
      * set doctrine query builder
-     * 
+     *
      * @param \Doctrine\ORM\QueryBuilder $queryBuilder
-     * 
-     * @return DoctrineBuilder 
+     *
+     * @return DoctrineBuilder
      */
     public function setDoctrineQueryBuilder(\Doctrine\ORM\QueryBuilder $queryBuilder)
     {
