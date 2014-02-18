@@ -192,7 +192,31 @@
 <form name="frm-{{id}}">
 {% endif %}
     <table class="display table table-bordered" id="{{id}}"> 
-        <thead> 
+        <thead>
+        {% if search %}
+            {% set i = 0 %}
+            <tr>
+                {% if multiple %}
+                    <th></th>
+                {% endif %}
+                {% for label,key in fields %}
+                    {% if label != '_identifier_' %}
+                        {% if search_fields is not empty %}
+                            {% if i in search_fields %}
+                                <td><input index="{{i}}" searchable="true" type="text" placeholder="{{ 'ali.common.search'|trans() }}" class="search_init" /></td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                        {% else %}
+                            <td><input index="{{i}}" searchable="true" type="text" placeholder="{{ 'ali.common.search'|trans() }}" class="search_init" /></td>
+                        {% endif %}
+                    {% elseif label == '_identifier_'and action and not action_twig %}
+                        <td></td>
+                    {% endif %}
+                    {% set i = i+1 %}
+                {% endfor %}
+            </tr>
+        {% endif %}
             <tr> 
             {% if multiple %}
                 <th width="1%" ><input type="checkbox" name="datatable_action_all" /></th>
@@ -206,30 +230,6 @@
                 <th>{{ 'ali.common.action'|trans()  }}</th>
             {% endif %}
             </tr>
-            {% if search %}
-                {% set i = 0 %}
-                <tr>
-                    {% if multiple %}
-                        <th></th>
-                    {% endif %}
-                    {% for label,key in fields %}
-                        {% if label != '_identifier_' %}
-                            {% if search_fields is not empty %}
-                                {% if i in search_fields %}
-                                    <td><input index="{{i}}" searchable="true" type="text" placeholder="{{ 'ali.common.search'|trans() }}" class="search_init" /></td>
-                                {% else %}
-                                    <td></td>
-                                {% endif %}
-                            {% else %}
-                                <td><input index="{{i}}" searchable="true" type="text" placeholder="{{ 'ali.common.search'|trans() }}" class="search_init" /></td>
-                            {% endif %}
-                        {% elseif label == '_identifier_'and action and not action_twig %}
-                            <td></td>
-                        {% endif %}
-                        {% set i = i+1 %}
-                    {% endfor %}
-                </tr>
-            {% endif %}
         </thead>
     </table>
 {% if multiple %}
